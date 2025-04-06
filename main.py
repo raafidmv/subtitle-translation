@@ -10,7 +10,7 @@ import tempfile
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class SrtTranslator:
-    def __init__(self, api_key: str, source_language: str = "Turkish", target_language: str = "Malayalam", batch_size: int = 60):
+    def __init__(self, api_key: str, source_language: str = "English", target_language: str = "Malayalam", batch_size: int = 60):
         self.source_language = source_language
         self.target_language = target_language
         self.max_retries = 3
@@ -192,7 +192,7 @@ def main():
     # Source language selection
     source_language = st.sidebar.selectbox(
         "Source Language",
-        options=["Turkish"],
+        options=["Turkish","English"],
         index=0
     )
     
