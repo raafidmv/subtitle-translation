@@ -192,14 +192,14 @@ def main():
     # Source language selection
     source_language = st.sidebar.selectbox(
         "Source Language",
-        options=["English", "Turkish"],
+        options=["Turkish","English"],
         index=0
     )
     
     # Target language selection
     target_language = st.sidebar.selectbox(
         "Target Language",
-        options=["Malayalam", "Hindi", "Spanish", "French", "German", "Japanese", "Chinese", "Arabic", "Russian"],
+        options=["Malayalam"],
         index=0
     )
     
