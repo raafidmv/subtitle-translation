@@ -10,7 +10,7 @@ import tempfile
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class SrtTranslator:
-    def __init__(self, api_key: str, source_language: str = "English", target_language: str = "Malayalam", batch_size: int = 60):
+    def __init__(self, api_key: str, source_language: str, target_language: str, batch_size: int = 60):
         self.source_language = source_language
         self.target_language = target_language
         self.max_retries = 3
@@ -189,10 +189,10 @@ def main():
     # API Key input with password masking
     api_key = st.sidebar.text_input("Enter Gemini API Key", type="password")
     
-    # Source language selection
+    # Source language selection - now includes English
     source_language = st.sidebar.selectbox(
         "Source Language",
-        options=["Turkish","English"],
+        options=["English", "Turkish"],
         index=0
     )
     
@@ -246,7 +246,7 @@ def main():
                     
                     status_text.text("Initializing translator...")
                     
-                    # Initialize translator
+                    # Initialize translator - now passing the selected source language
                     translator = SrtTranslator(
                         api_key=api_key,
                         source_language=source_language,
@@ -292,6 +292,7 @@ def main():
         - Preserves SRT formatting
         - Maintains subtitle timing
         - Natural, conversational translations
+        - Supports English and Turkish as source languages
         
         **Note:** You need a valid Gemini API key to use this app.
         """
