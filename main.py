@@ -35,7 +35,7 @@ class SrtTranslator:
 Maintain the exact same number of lines in your translation as in the original text.
 
 Guidelines:
-1. IMPORTANT: You MUST use PROPER {target_language} UNICODE script characters only (NOT romanized/transliterated text), try to fit the meaning and sync correctly for all the lines
+1. IMPORTANT: You MUST use PROPER {target_language} UNICODE script characters only (NOT romanized/transliterated text)
 2. Use authentic, colloquial {target_language} expressions rather than literal translations
 3. Preserve character names, places, and technical terms in their original form
 4. Match the tone, emotion, and register (formal/informal) of the original dialogue
