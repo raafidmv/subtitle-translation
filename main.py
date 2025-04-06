@@ -31,23 +31,24 @@ class SrtTranslator:
                 }
             )
             
-            self.translation_prompt = f"""Translate the following {source_language} subtitle lines from a movie to natural, conversational {target_language}. 
+            self.translation_prompt = f"""Translate the following {source_language} subtitle lines from a movie to proper {target_language} script. 
 Maintain the exact same number of lines in your translation as in the original text.
 
 Guidelines:
-1. Use authentic, colloquial {target_language} expressions rather than literal translations
-2. Preserve character names, places, and technical terms in their original form
-3. Match the tone, emotion, and register (formal/informal) of the original dialogue
-4. Keep translations concise for proper subtitle display
-5. Adapt cultural references appropriately for a {target_language}-speaking audience
-6. Maintain the original meaning and intent of the dialogue
+1. IMPORTANT: You MUST use PROPER {target_language} UNICODE script characters only (NOT romanized/transliterated text)
+2. Use authentic, colloquial {target_language} expressions rather than literal translations
+3. Preserve character names, places, and technical terms in their original form
+4. Match the tone, emotion, and register (formal/informal) of the original dialogue
+5. Keep translations concise for proper subtitle display
+6. Adapt cultural references appropriately for a {target_language}-speaking audience
+7. Maintain the original meaning and intent of the dialogue
 
 Each line is separated by a line break. Translate each line and keep the same number of lines in your response.
 
 {source_language} subtitles:
 {{text}}
 
-Provide only the {target_language} translations, with each line separated by a line break, matching the original number of lines exactly.
+Provide only the {target_language} translations in proper {target_language} Unicode script, with each line separated by a line break, matching the original number of lines exactly.
 """
         except Exception as e:
             st.error(f"Failed to initialize Gemini API: {str(e)}")
