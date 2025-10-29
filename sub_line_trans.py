@@ -149,7 +149,7 @@ Line [number]:
 
     
     # Gemini API endpoint
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key={api_key}"
     
     # Request payload
     payload = {
