@@ -13,6 +13,24 @@ st.title("🎬 Movie Subtitle Translator (English to Malayalam)")
 # API Key input
 api_key = st.text_input("Enter your Gemini API Key:", type="password")
 
+# Model selection dropdown
+gemini_models = {
+    "gemini-flash-latest":"gemini-flash-latest",
+    "gemini-flash-lite-latest":"gemini-flash-lite-latest",
+    "gemini-2.5-pro":"gemini-2.5-pro",
+    "Gemini 2.5 Flash": "gemini-2.5-flash",
+    "Gemini 2.5 Flash-lite": "gemini-2.5-flash-lite",
+}
+
+selected_model_name = st.selectbox(
+    "Select Gemini Model:",
+    options=list(gemini_models.keys()),
+    index=0,
+    help="Choose the Gemini model for translation"
+)
+
+selected_model = gemini_models[selected_model_name]
+
 # File upload
 uploaded_file = st.file_uploader("Upload SRT File", type=['srt'])
 
@@ -77,7 +95,7 @@ def format_selected_subtitles(subtitles, start, end=None):
     
     return selected, formatted_text.strip()
 
-def translate_with_gemini(selected_subs, movie_name, full_context, api_key):
+def translate_with_gemini(selected_subs, movie_name, full_context, api_key, model, start_line, end_line):
     """Translate subtitles using Gemini API via requests"""
     
     # Create context-aware prompt
@@ -88,31 +106,6 @@ def translate_with_gemini(selected_subs, movie_name, full_context, api_key):
         for s in selected_subs
     ])
     
-    # prompt = f"""You are a professional movie subtitle translator specializing in English to Malayalam translation.
-
-# Movie: {movie_name}
-
-# CONTEXT (surrounding subtitles for better understanding):
-# {context_text}
-
-# SUBTITLES TO TRANSLATE:
-# {translation_text}
-
-# Instructions:
-# 1. Translate the subtitles from English to Malayalam
-# 2. Preserve the essence, emotion, and tone of the original dialogue
-# 3. Keep cultural context and movie context in mind
-# 4. Maintain natural Malayalam dialogue flow
-# 6. Consider the timestamps to understand scene pacing
-# 7. Return ONLY the translated Malayalam text for each line number, maintaining the line breaks
-
-# Format your response as:
-# Line [number]:
-# [Malayalam translation]
-
-# Line [number]:
-# [Malayalam translation]
-# """
     prompt = f"""
 You are an expert **movie subtitle translator** specializing in **English-to-Malayalam** translations for dubbed films.
 
@@ -146,10 +139,9 @@ Line [number]:
 
 (Ensure each line is separated exactly as in the input.)
 """
-
     
     # Gemini API endpoint
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
     
     # Request payload
     payload = {
@@ -196,6 +188,9 @@ if uploaded_file:
     if subtitles:
         st.success(f"✅ Loaded {len(subtitles)} subtitles from '{movie_name}'")
         
+        # Display selected model
+        st.info(f"🤖 Using model: **{selected_model}**")
+        
         # Create two columns for line selection
         col1, col2 = st.columns(2)
         
@@ -218,15 +213,7 @@ if uploaded_file:
                 help="Leave as 0 to select only start line"
             )
         
-        # Context range slider
-        # st.subheader("Context Settings")
-        # context_range = st.slider(
-        #     "Include surrounding lines for context (before and after)",
-        #     min_value=0,
-        #     max_value=10,
-        #     value=3,
-        #     help="This helps Gemini understand the scene better"
-        # )
+        # Context range
         context_range = 5
         
         # Display selected subtitles
@@ -250,7 +237,7 @@ if uploaded_file:
         # Translation button
         if 'selected' in st.session_state and api_key:
             if st.button("🌐 Translate to Malayalam", type="secondary"):
-                with st.spinner("Translating with Gemini AI..."):
+                with st.spinner(f"Translating with {selected_model_name}..."):
                     # Get context subtitles
                     context_start = max(1, st.session_state['start'] - st.session_state['context_range'])
                     context_end = min(len(subtitles), st.session_state['end'] + st.session_state['context_range'])
@@ -262,7 +249,10 @@ if uploaded_file:
                         st.session_state['selected'],
                         st.session_state['movie_name'],
                         context_subs,
-                        api_key
+                        api_key,
+                        selected_model,
+                        st.session_state['start'],
+                        st.session_state['end']
                     )
                     
                     st.subheader("Malayalam Translation:")
@@ -279,7 +269,3 @@ if uploaded_file:
             st.warning("⚠️ Please enter your Gemini API Key to translate")
     else:
         st.error("Could not parse SRT file. Please check the format.")
-# else:
-#     st.info("👆 Please upload an SRT file to get started")
-    
-    
